@@ -1,7 +1,7 @@
-FROM python:3.12-alpine3.18 AS build-image
+FROM python:3.13-alpine AS build-image
 
-ENV WORKDIR /app
-ENV PYTHONUSERBASE $WORKDIR
+ENV WORKDIR=/app
+ENV PYTHONUSERBASE=$WORKDIR
 ENV PATH=$WORKDIR/bin:$PATH
 
 RUN apk add -U git musl-dev build-base
@@ -13,16 +13,16 @@ ADD . $WORKDIR
 RUN PIP_USER=1 PIP_IGNORE_INSTALLED=1 pipenv install --system --deploy
 
 
-FROM python:3.12-alpine3.18 AS runtime-image
+FROM python:3.13-alpine AS runtime-image
 
 LABEL org.opencontainers.image.source=https://github.com/maltekrupa/clamav-rest
 
-ENV WORKDIR /app
+ENV WORKDIR=/app
 WORKDIR $WORKDIR
-ENV PYTHONUSERBASE $WORKDIR
+ENV PYTHONUSERBASE=$WORKDIR
 ENV PATH=$WORKDIR/bin:$PATH
 
-ENV PORT 8080
+ENV PORT=8080
 EXPOSE $PORT
 
 COPY --from=build-image /app /app/
